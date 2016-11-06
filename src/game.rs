@@ -40,7 +40,13 @@ impl GameState {
             for cmd in cmds.into_iter() {
                 match cmd {
                     Command::MoveTo(uid, pos) => {
-                        // TODO
+                        let u_opt = self.units.get_mut(&uid);
+                        if let Some(u) = u_opt {
+                            let next_pos = u.pos.move_to(pos, u.kind.speed());
+                            if !self.map.is_solid(next_pos) {
+                                u.pos = next_pos;
+                            }
+                        }
                     },
                     Command::Produce(sid, kind) => {
                         // TODO

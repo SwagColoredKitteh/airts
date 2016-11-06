@@ -19,11 +19,14 @@ mod renderer;
 use game::GameState;
 use player::PlayerState;
 use structure::StructureType;
+use unit::UnitType;
 use renderer::Renderer;
 use loc::Loc;
 use size::Size;
 use map::Map;
 use tile_map::{TileMap, TileInfo, TileId};
+use vec2::Vec2;
+use command::Command;
 
 use std::thread;
 use std::time::Duration;
@@ -49,7 +52,11 @@ fn main() {
 
     let p1hq = game.new_structure(p1, Loc(1, 1), StructureType::HQ).unwrap();
     
+    let wk_pos = game.get_structure(p1hq).unwrap().middle_point();
+    let wk = game.new_unit(p1, wk_pos, UnitType::Worker).unwrap();
+    
     loop {
+        game.simulate(vec![vec![Command::MoveTo(wk, Vec2(500., 300.))]]);
         renderer.render(&game);
         thread::sleep(Duration::from_millis(500));
     }
