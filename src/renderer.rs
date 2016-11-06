@@ -67,7 +67,7 @@ fn render_onto(game: &GameState, mut c: Context, g: &mut G2d) {
     }
     for s in game.structures_iter() {
         let tl = s.loc.top_left() + Vec2(CELL_SIZE / 4., CELL_SIZE / 4.);
-        let size = s.kind.size().to_vec() - Vec2(CELL_SIZE / 8., CELL_SIZE / 8.);
+        let size = s.kind.size().to_vec() - Vec2(CELL_SIZE / 2., CELL_SIZE / 2.);
         rectangle([0.6, 1., 1., 1.], [tl.0, tl.1, size.0, size.1], c.transform, g);
     }
     for u in game.units_iter() {

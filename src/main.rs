@@ -27,6 +27,7 @@ use map::Map;
 use tile_map::{TileMap, TileInfo, TileId};
 use vec2::Vec2;
 use command::Command;
+use owner::Owner;
 
 use std::thread;
 use std::time::Duration;
@@ -47,6 +48,10 @@ fn main() {
     let mut game = GameState::new(map, vec![
         PlayerState::new("Test1".to_owned())
     ]);
+
+    let metal1 = game.new_structure(Owner::Neutral, Loc(5, 2), StructureType::Metal).unwrap();
+    let metal2 = game.new_structure(Owner::Neutral, Loc(5, 3), StructureType::Metal).unwrap();
+    let metal3 = game.new_structure(Owner::Neutral, Loc(4, 3), StructureType::Metal).unwrap();
     
     let p1 = game.get_player_by_name("Test1").unwrap().owner();
 
