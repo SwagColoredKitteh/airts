@@ -31,7 +31,7 @@ impl Unit {
 
 pub type UnitTypeId = usize;
 
-#[derive(Copy, Clone, Debug)]
+#[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub enum UnitType {
     Worker
 }
@@ -64,7 +64,7 @@ impl UnitType {
 
     pub fn speed(self) -> f64 {
         match self {
-            UnitType::Worker => 50.
+            UnitType::Worker => 10.
         }
     }
 }

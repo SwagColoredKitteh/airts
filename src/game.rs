@@ -10,6 +10,7 @@ use map::Map;
 
 use std::io::prelude::*;
 use std::io;
+use std::cmp;
 
 use std::collections::{BTreeMap, BTreeSet};
 
@@ -40,11 +41,15 @@ impl GameState {
 
     pub fn simulate(&mut self, commands: Vec<Vec<Command>>) {
         for (pid, cmds) in commands.into_iter().enumerate() {
+            let current = Owner::Player(pid);
             let mut units_ordered = BTreeSet::new();
             let mut structures_ordered = BTreeSet::new();
             for cmd in cmds.into_iter() {
                 match cmd {
                     Command::MoveTo(uid, pos) => {
+                        if self.units[&uid].owner != current {
+                            continue;
+                        }
                         if units_ordered.contains(&uid) {
                             continue;
                         }
@@ -58,6 +63,9 @@ impl GameState {
                         }
                     },
                     Command::Produce(sid, kind) => {
+                        if self.structures[&sid].owner != current {
+                            continue;
+                        }
                         if structures_ordered.contains(&sid) {
                             continue;
                         }
@@ -65,6 +73,9 @@ impl GameState {
                         // TODO
                     },
                     Command::Build(uid, st, pos) => {
+                        if self.units[&uid].owner != current {
+                            continue;
+                        }
                         if units_ordered.contains(&uid) {
                             continue;
                         }
@@ -74,7 +85,44 @@ impl GameState {
                 }
             }
         }
-        // TODO: do actions, resolve collisions, etc
+        let mut structures_to_delete = Vec::new();
+        let mut units_to_delete = Vec::new();
+        for unit in self.units.values_mut() {
+            if unit.kind == UnitType::Worker {
+                for s in self.structures.values_mut() {
+                    if (s.kind == StructureType::HQ || s.kind == StructureType::Outpost) && s.contains_pos(unit.pos) {
+                        if unit.resources > 0 {
+                            let will_take = cmp::min(25, unit.resources);
+                            if will_take > 0 {
+                                if let Owner::Player(pid) = unit.owner {
+                                    self.players[pid].metal += will_take;
+                                    unit.resources -= will_take;
+                                }
+                            }
+                        }
+                    }
+                    if s.kind == StructureType::Metal && s.contains_pos(unit.pos) {
+                        if unit.resources < 100 {
+                            let avail = cmp::min(s.resources, 25);
+                            if avail > 0 {
+                                let will_take = cmp::min(avail, 100 - unit.resources);
+                                s.resources -= will_take;
+                                unit.resources += will_take;
+                                if s.resources == 0 {
+                                    structures_to_delete.push(s.id);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        for sid in structures_to_delete {
+            self.structures.remove(&sid);
+        }
+        for uid in units_to_delete {
+            self.units.remove(&uid);
+        }
     }
 
     pub fn get_player_by_name<'a>(&'a self, name: &str) -> Option<&'a PlayerState> {

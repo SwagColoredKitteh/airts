@@ -30,16 +30,30 @@ impl Structure {
         }
     }
 
+    pub fn top_left(&self) -> Vec2 {
+        self.loc.top_left()
+    }
+
+    pub fn bottom_right(&self) -> Vec2 {
+        self.loc.top_left() + self.kind.size().to_vec()
+    }
+
     pub fn middle_point(&self) -> Vec2 {
-        let tl = self.loc.top_left();
+        let tl = self.top_left();
         let off = self.kind.size().to_vec() * 0.5;
         tl + off
+    }
+
+    pub fn contains_pos(&self, pos: Vec2) -> bool {
+        let tl = self.top_left();
+        let br = self.bottom_right();
+        pos.0 >= tl.0 && pos.1 >= tl.1 && pos.0 <= br.0 && pos.1 <= br.1
     }
 }
 
 pub type StructureTypeId = usize;
 
-#[derive(Copy, Clone, Debug)]
+#[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub enum StructureType {
     HQ,
     Outpost,

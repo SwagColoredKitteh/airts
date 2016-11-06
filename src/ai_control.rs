@@ -1,5 +1,6 @@
 use command::Command;
 use game::GameState;
+use player::PlayerId;
 
 use std::sync::mpsc::{channel, Sender, Receiver};
 use std::sync::{Arc, Mutex, Barrier, Weak};
@@ -18,9 +19,9 @@ pub struct AIControl {
 }
 
 impl AIControl {
-    pub fn new(read: Box<BufRead + Send>, write: Box<Write + Send>, initial: Arc<GameState>) -> AIControl {
+    pub fn new(read: Box<BufRead + Send>, write: Box<Write + Send>, my_id: PlayerId, initial: Arc<GameState>) -> AIControl {
         let (tx, rx) = channel();
-        AIChild::start(read, write, initial, rx);
+        AIChild::start(read, write, my_id, initial, rx);
         AIControl {
             submit: tx
         }
@@ -41,15 +42,17 @@ impl AIControl {
 
 struct AIChild {
     read: Box<BufRead>,
-    write: Box<Write>
+    write: Box<Write>,
+    my_id: PlayerId
 }
 
 impl AIChild {
-    fn start(read: Box<BufRead + Send>, write: Box<Write + Send>, initial: Arc<GameState>, submit: Receiver<Request>) {
+    fn start(read: Box<BufRead + Send>, write: Box<Write + Send>, my_id: PlayerId, initial: Arc<GameState>, submit: Receiver<Request>) {
         thread::spawn(move || { // TODO: better error handling
             let mut me = AIChild {
                 read: read,
-                write: write
+                write: write,
+                my_id: my_id
             };
             me.init(initial.as_ref()).unwrap();
             loop {
@@ -65,6 +68,7 @@ impl AIChild {
     }
 
     fn init(&mut self, game: &GameState) -> Result<(), io::Error> {
+        try!(writeln!(self.write, "{}", self.my_id));
         game.map.dump_state(&mut self.write)
     }
 
