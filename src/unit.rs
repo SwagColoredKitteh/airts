@@ -58,7 +58,13 @@ impl UnitType {
 
     pub fn radius(self) -> f64 {
         match self {
-            UnitType::Worker => 4.
+            UnitType::Worker => 15.
+        }
+    }
+
+    pub fn speed(self) -> f64 {
+        match self {
+            UnitType::Worker => 50.
         }
     }
 }
