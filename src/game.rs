@@ -41,7 +41,7 @@ impl GameState {
     pub fn simulate(&mut self, commands: Vec<Vec<Command>>) {
         for (pid, cmds) in commands.into_iter().enumerate() {
             for cmd in cmds.into_iter() {
-                match cmd {
+                match cmd { // TODO: prevent double commands
                     Command::MoveTo(uid, pos) => {
                         let u_opt = self.units.get_mut(&uid);
                         if let Some(u) = u_opt {

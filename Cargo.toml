@@ -3,5 +3,9 @@ name = "rts"
 version = "0.1.0"
 authors = ["SwagColoredKitteh <kittycake@openmailbox.org>"]
 
+[features]
+default = ["piston_renderer"]
+piston_renderer = []
+
 [dependencies]
 piston_window = "*"
