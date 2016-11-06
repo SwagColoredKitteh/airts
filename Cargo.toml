@@ -1,0 +1,7 @@
+[package]
+name = "rts"
+version = "0.1.0"
+authors = ["SwagColoredKitteh <kittycake@openmailbox.org>"]
+
+[dependencies]
+piston_window = "*"
