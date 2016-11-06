@@ -1,6 +1,7 @@
 use owner::Owner;
 use loc::Loc;
 use size::Size;
+use vec2::Vec2;
 
 pub type StructureId = usize;
 
@@ -27,6 +28,12 @@ impl Structure {
             health: kind.max_health(),
             resources: kind.resources()
         }
+    }
+
+    pub fn middle_point(&self) -> Vec2 {
+        let tl = self.loc.top_left();
+        let off = self.kind.size().to_vec() * 0.5;
+        tl + off
     }
 }
 
