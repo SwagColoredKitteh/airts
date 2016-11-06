@@ -28,4 +28,11 @@ impl Owner {
             None
         }
     }
+
+    pub fn to_i64(self) -> i64 {
+        match self {
+            Owner::Player(id) => id as i64,
+            Owner::Neutral => -1
+        }
+    }
 }

@@ -8,6 +8,9 @@ use loc::Loc;
 use size::Size;
 use map::Map;
 
+use std::io::prelude::*;
+use std::io;
+
 use std::collections::BTreeMap;
 
 #[derive(Clone, Debug)]
@@ -110,5 +113,17 @@ impl GameState {
 
     pub fn units_iter<'a>(&'a self) -> impl Iterator<Item = &'a Unit> {
         self.units.values()
+    }
+
+    pub fn dump_state<W: Write>(&self, w: &mut W) -> Result<(), io::Error> {
+        try!(writeln!(w, "{}", self.structures.len()));
+        for s in self.structures_iter() {
+            try!(writeln!(w, "{} {} {} {} {} {} {}", s.id, s.kind.to_id(), s.owner.to_i64(), s.loc.0, s.loc.1, s.health, s.resources));
+        }
+        try!(writeln!(w, "{}", self.units.len()));
+        for u in self.units_iter() {
+            try!(writeln!(w, "{} {} {} {} {} {} {}", u.id, u.kind.to_id(), u.owner.to_i64(), u.pos.0.floor(), u.pos.1.floor(), u.health, u.resources));
+        }
+        Ok(())
     }
 }

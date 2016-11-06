@@ -1,26 +1,43 @@
-use tile_map::{TileMap, TileInfo, TileId};
 use size::Size;
 use loc::Loc;
 use vec2::Vec2;
 
 use std::io::prelude::*;
+use std::io;
 
 use std::ops::{Index, IndexMut};
 
+pub type TileId = usize;
+
 pub const CELL_SIZE: f64 = 64.;
+
+pub struct TileInfo {
+    pub solid: bool
+}
+
+static TILE_INFO: [TileInfo; 2] = [
+    TileInfo {
+        solid: false
+    },
+    TileInfo {
+        solid: true
+    }
+];
+
+pub fn tile_info(id: TileId) -> &'static TileInfo {
+    &TILE_INFO[id]
+}
 
 #[derive(Clone, Debug)]
 pub struct Map {
     size: Size,
-    pub tile_map: TileMap,
     data: Vec<TileId>
 }
 
 impl Map {
-    pub fn new_filled(tile_map: TileMap, size: Size, fill: TileId) -> Map {
+    pub fn new_filled(size: Size, fill: TileId) -> Map {
         Map {
             size: size,
-            tile_map: tile_map,
             data: vec![fill; size.area() as usize]
         }
     }
@@ -28,7 +45,7 @@ impl Map {
     // TODO: better error handling
     // TODO: better data checking (sanity checks are very lacking)
     // TODO: check whether values are in the tilemap's range
-    pub fn from_stream<R: BufRead>(tile_map: TileMap, r: R) -> Result<Map, ()> {
+    pub fn from_stream<R: BufRead>(r: R) -> Result<Map, ()> {
         let mut lines = r.lines().map(Result::unwrap);
         let wh_line = try!(lines.next().ok_or(()));
         let wh_vec: Vec<usize> = wh_line.split(" ").take(2).filter_map(|n| n.parse().ok()).collect();
@@ -43,9 +60,18 @@ impl Map {
         }
         Ok(Map {
             size: s,
-            tile_map: tile_map,
             data: data
         })
+    }
+
+    pub fn dump_state<W: Write>(&self, w: &mut W) -> Result<(), io::Error> {
+        try!(writeln!(w, "{} {}", self.size.0, self.size.1));
+        for y in 0..self.size.1 {
+            let idx = (y * self.size.0) as usize;
+            let row = &self.data[idx..idx + self.size.0 as usize];
+            try!(writeln!(w, "{}", row.iter().map(|id| id.to_string().chars().next().unwrap()).collect::<String>()));
+        }
+        Ok(())
     }
 
     pub fn loc_iter(&self) -> impl Iterator<Item = Loc> {
@@ -62,7 +88,7 @@ impl Map {
 
     pub fn is_solid(&self, pos: Vec2) -> bool {
         let loc = self.to_loc(pos);
-        self.tile_map.tile_info(self[loc]).unwrap().solid
+        tile_info(self[loc]).solid
     }
 }
 

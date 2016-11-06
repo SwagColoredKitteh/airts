@@ -2,7 +2,7 @@ use piston_window::*;
 
 use game::GameState;
 use vec2::Vec2;
-use map::CELL_SIZE;
+use map::{self, CELL_SIZE};
 
 use std::sync::{Arc, Mutex};
 use std::thread;
@@ -56,7 +56,7 @@ fn render_onto(game: &GameState, mut c: Context, g: &mut G2d) {
     }
     for loc in game.map.loc_iter() {
         let t = game.map[loc];
-        let col = if game.map.tile_map.tile_info(t).unwrap().solid {
+        let col = if map::tile_info(t).solid {
             [0.7, 0.7, 0.7, 1.0]
         }
         else {
