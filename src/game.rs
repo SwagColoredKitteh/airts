@@ -11,7 +11,7 @@ use map::Map;
 use std::io::prelude::*;
 use std::io;
 
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 
 #[derive(Clone, Debug)]
 pub struct GameState {
@@ -40,9 +40,15 @@ impl GameState {
 
     pub fn simulate(&mut self, commands: Vec<Vec<Command>>) {
         for (pid, cmds) in commands.into_iter().enumerate() {
+            let mut units_ordered = BTreeSet::new();
+            let mut structures_ordered = BTreeSet::new();
             for cmd in cmds.into_iter() {
-                match cmd { // TODO: prevent double commands
+                match cmd {
                     Command::MoveTo(uid, pos) => {
+                        if units_ordered.contains(&uid) {
+                            continue;
+                        }
+                        units_ordered.insert(uid);
                         let u_opt = self.units.get_mut(&uid);
                         if let Some(u) = u_opt {
                             let next_pos = u.pos.move_to(pos, u.kind.speed());
@@ -52,9 +58,17 @@ impl GameState {
                         }
                     },
                     Command::Produce(sid, kind) => {
+                        if structures_ordered.contains(&sid) {
+                            continue;
+                        }
+                        structures_ordered.insert(sid);
                         // TODO
                     },
                     Command::Build(uid, st, pos) => {
+                        if units_ordered.contains(&uid) {
+                            continue;
+                        }
+                        units_ordered.insert(uid);
                         // TODO
                     }
                 }
