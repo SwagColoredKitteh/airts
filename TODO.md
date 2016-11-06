@@ -11,3 +11,4 @@ TODO
  - Terrain and initial configuration generation.
  - Orchestration server. (likely going to use NodeJS for this)
  - Timeouts.
+ - Better error handling and sanity checks everywhere.
