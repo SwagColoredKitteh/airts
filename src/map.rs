@@ -1,6 +1,7 @@
 use tile_map::{TileMap, TileInfo, TileId};
 use size::Size;
 use loc::Loc;
+use vec2::Vec2;
 
 use std::io::prelude::*;
 
@@ -53,6 +54,15 @@ impl Map {
 
     pub fn size(&self) -> Size {
         self.size
+    }
+
+    pub fn to_loc(&self, pos: Vec2) -> Loc {
+        Loc((pos.0 / CELL_SIZE) as i64, (pos.1 / CELL_SIZE) as i64)
+    }
+
+    pub fn is_solid(&self, pos: Vec2) -> bool {
+        let loc = self.to_loc(pos);
+        self.tile_map.tile_info(self[loc]).unwrap().solid
     }
 }
 
