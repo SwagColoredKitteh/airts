@@ -5,7 +5,7 @@ authors = ["SwagColoredKitteh <kittycake@openmailbox.org>"]
 
 [features]
 default = ["piston_renderer"]
-piston_renderer = []
+piston_renderer = ["piston_window"]
 
 [dependencies]
-piston_window = "*"
+piston_window = { optional = true, version = "*" }
