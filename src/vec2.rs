@@ -52,6 +52,10 @@ impl Vec2 {
     pub fn neg(self) -> Vec2 {
         Vec2(-self.0, -self.1)
     }
+
+    pub fn vector_to(self, other: Vec2) -> Vec2 {
+        other - self
+    }
     
     pub fn rotate(self, angle: f64) -> Vec2 {
         let x = self.0;
@@ -59,6 +63,17 @@ impl Vec2 {
         let c = angle.cos();
         let s = angle.sin();
         Vec2(x * c - y * s, x * s + y * c)
+    }
+    
+    pub fn move_to(self, target: Vec2, range: f64) -> Vec2 {
+        let diff = self.vector_to(target);
+        if diff.len() < range {
+            target
+        }
+        else {
+            let norm = diff.norm();
+            self + norm * range
+        }
     }
 }
 
