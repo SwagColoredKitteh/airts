@@ -64,12 +64,6 @@ fn main() {
     let p1hq = game.new_structure(p1, Loc(1, 1), StructureType::HQ).unwrap();
     let p2hq = game.new_structure(p2, Loc(19, 20), StructureType::HQ).unwrap();
     
-    let p1wk_pos = game.get_structure(p1hq).unwrap().middle_point();
-    let p1wk = game.new_unit(p1, p1wk_pos, UnitType::Worker).unwrap();
-
-    let p2wk_pos = game.get_structure(p2hq).unwrap().middle_point();
-    let p2wk = game.new_unit(p2, p2wk_pos, UnitType::Worker).unwrap();
-    
     let game_arc = Arc::new(game.clone());
     
     let mut p1p = process::Command::new("./test_ai.py")

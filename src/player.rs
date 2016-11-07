@@ -14,7 +14,7 @@ impl PlayerState {
         PlayerState {
             id: 0,
             name: name,
-            metal: 0
+            metal: 100 // TODO: temporary measure until the GameState has proper mutability here
         }
     }
 

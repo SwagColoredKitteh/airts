@@ -47,7 +47,7 @@ impl GameState {
             for cmd in cmds.into_iter() {
                 match cmd {
                     Command::MoveTo(uid, pos) => {
-                        if self.units[&uid].owner != current {
+                        if self.units[&uid].owner != current { // TODO: check validity of uid
                             continue;
                         }
                         if units_ordered.contains(&uid) {
@@ -63,16 +63,22 @@ impl GameState {
                         }
                     },
                     Command::Produce(sid, kind) => {
-                        if self.structures[&sid].owner != current {
+                        if self.structures[&sid].owner != current { // TODO: check validity of sid
                             continue;
                         }
                         if structures_ordered.contains(&sid) {
                             continue;
                         }
                         structures_ordered.insert(sid);
-                        // TODO
+                        let metal = self.players[pid].metal;
+                        if kind.cost() <= metal { // TODO: check if this building can produce this unit
+                            let unit_pos = self.structures[&sid].middle_point();
+                            let uid = self.new_unit(Owner::Player(pid), unit_pos, kind).unwrap(); // TODO: look if this unwrap may fail
+                            self.players[pid].metal -= kind.cost();
+                            units_ordered.insert(uid);
+                        }
                     },
-                    Command::Build(uid, st, pos) => {
+                    Command::Build(uid, st, pos) => { // TODO: check validity of uid
                         if self.units[&uid].owner != current {
                             continue;
                         }

@@ -104,7 +104,14 @@ while True:
             closest = min((s for s in structures if STRUCTURE_TYPE[s.kind].name == "HQ"), key = lambda s: distance(s.middle_point(), unit.pos))
             (x, y) = closest.middle_point()
             cmds.append(("MOVETO", unit.uid, math.floor(x), math.floor(y)))
+    for s in structures:
+        if s.owner != my_id:
+            continue
+        if STRUCTURE_TYPE[s.kind].name == "HQ" or STRUCTURE_TYPE[s.kind].name == "Outpost":
+            if metal >= UNIT_TYPE[0].cost:
+                cmds.append(("PRODUCE", s.sid, 0))
+                metal -= UNIT_TYPE[0].cost
     print(len(cmds))
     for cmd in cmds:
         print(*cmd)
-    debug(structures, units)
+        debug(*cmd)
