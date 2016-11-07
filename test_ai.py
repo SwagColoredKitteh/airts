@@ -86,6 +86,7 @@ for y in range(h):
 debug(world)
 
 while True:
+    metal = int(input())
     structure_count = int(input())
     structures = [Structure.parse(input()) for i in range(structure_count)]
     unit_count = int(input())

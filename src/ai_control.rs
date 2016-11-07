@@ -73,6 +73,7 @@ impl AIChild {
     }
 
     fn run(&mut self, game: &GameState, cmds_out: &mut Vec<Command>) -> Result<(), io::Error> { // TODO: better error handling
+        try!(writeln!(self.write, "{}", game.get_player_by_id(self.my_id).unwrap().metal));
         game.dump_state(&mut self.write);
         let mut buf = String::new();
         try!(self.read.read_line(&mut buf));
