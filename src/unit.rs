@@ -67,4 +67,10 @@ impl UnitType {
             UnitType::Worker => 10.
         }
     }
+
+    pub fn cost(self) -> i64 {
+        match self {
+            UnitType::Worker => 50
+        }
+    }
 }

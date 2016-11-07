@@ -15,11 +15,12 @@ class StructureType:
         self.max_health = max_health
 
 class UnitType:
-    def __init__(self, name, radius, max_health, speed):
+    def __init__(self, name, radius, max_health, speed, cost):
         self.name = name
         self.radius = radius
         self.max_health = max_health
         self.speed = speed
+        self.cost = cost
 
 STRUCTURE_TYPE = [
         StructureType("HQ", (3, 2), 350),
@@ -28,7 +29,7 @@ STRUCTURE_TYPE = [
 ]
 
 UNIT_TYPE = [
-        UnitType("Worker", 15., 15, 10.)
+        UnitType("Worker", 15., 15, 10., 50)
 ]
 
 class Structure:
