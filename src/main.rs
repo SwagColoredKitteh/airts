@@ -3,17 +3,17 @@
 #[cfg(feature = "piston_renderer")]
 extern crate piston_window;
 
-mod vec2;
-mod unit;
-mod structure;
-mod player;
-mod owner;
-mod game;
-mod command;
-mod loc;
-mod size;
-mod map;
-mod ai_control;
+pub mod vec2;
+pub mod unit;
+pub mod structure;
+pub mod player;
+pub mod owner;
+pub mod game;
+pub mod command;
+pub mod loc;
+pub mod size;
+pub mod map;
+pub mod ai_control;
 
 #[cfg(feature = "piston_renderer")]
 mod renderer;
